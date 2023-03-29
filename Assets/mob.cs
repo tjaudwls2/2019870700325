@@ -8,15 +8,19 @@ public class mob : MonoBehaviour
     public float speed;
     public pos Pos;
     bool invincibility=true;
+    public bool stop;
+    public bool notdie;
+    public float destime;
     public enum pos
     {
         앞,
         오른쪽,
         왼쪽
     }
-    private void Start()
+    protected virtual void Start()
     {
-        Destroy(this.gameObject,5f);
+        if(!notdie)
+        Destroy(this.gameObject, destime);
        
 
     }
@@ -28,27 +32,40 @@ public class mob : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
 
         if (this.transform.position.y < 5)
         {
             invincibilityoff();
         }
-
-        switch (Pos)
+        if (!stop)
         {
-            case pos.앞:      this.transform.Translate(Vector2.down *speed *Time.deltaTime);            break;
-            case pos.오른쪽:  this.transform.Translate(new Vector2(0.1f,-1) * speed * Time.deltaTime); break;
-            case pos.왼쪽:    this.transform.Translate(new Vector2(-0.1f, -1) * speed * Time.deltaTime); break;
+            switch (Pos)
+            {
+                case pos.앞: this.transform.Translate(Vector2.down * speed * Time.deltaTime); break;
+                case pos.오른쪽: this.transform.Translate(new Vector2(0.1f, -1) * speed * Time.deltaTime); break;
+                case pos.왼쪽: this.transform.Translate(new Vector2(-0.1f, -1) * speed * Time.deltaTime); break;
+            }
         }
         if (hp <= 0)
         {
-          GameManager.GameManagerthis.point++;
-            Destroy(this.gameObject);
+            if (!thisboss)
+            {
+                float itemper = Random.value;
+                if (itemper >= 0.9f)
+                {
+                    GameObject item = Instantiate(items[Random.Range(0, 3)], this.transform.position, this.transform.rotation);
+                    item.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 50);
+                }
+                GameManager.GameManagerthis.point++;
+                Destroy(this.gameObject);
+            }
         }
     }
+    public GameObject[] items;
     public GameObject hiteff;
+    public bool thisboss;
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
@@ -56,9 +73,18 @@ public class mob : MonoBehaviour
         {
             hp--;
             Destroy(collision.gameObject);
-            Instantiate(hiteff, this.transform.position, this.transform.rotation);
-         
+            if(!thisboss)
+            Instantiate(hiteff,  this.transform.position, this.transform.rotation);
+            else
+            Instantiate(hiteff, collision.transform.position, this.transform.rotation);
         }
+        if (collision.CompareTag("tone") && !invincibility)
+        {
+            hp-=2;
 
+
+
+
+        }
     }
 }

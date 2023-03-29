@@ -9,9 +9,9 @@ public class background : MonoBehaviour
     void Update()
     {
         this.transform.Translate(Vector2.down * Time.deltaTime *speed);
-        if (transform.position.y<-5)
+        if (transform.position.y< -4.2f)
         {
-            this.transform.position = new Vector3(0, 6.5f, 0);
+            this.transform.position = new Vector3(0, 5.8759f, 0);
         }
     }
 }

@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bullet
+  - Mob
+  - postion
+  - boom
+  - knife
+  - tone
   layers:
   - Default
   - TransparentFX
